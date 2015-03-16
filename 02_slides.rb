@@ -18,31 +18,18 @@
 # This requires gosu gem has been installed and the chipmunk bundle.
 # The mac version of chipmunk has come with this package.
 # For Linux and Windows you'll need to build the package yourself
-require 'rubygems'
+
 require 'gosu'
 require 'chipmunk'
+
+require_relative 'numeric'
+require_relative 'block'
 
 # These are some general constants
 SCREEN_WIDTH = 600
 SCREEN_HEIGHT = 800
 FULLSCREEN = false
 INFINITY = 1.0/0
-
-# This seems to be the standard helpers for chipmunk to/from gosu
-class Numeric
-  def gosu_to_radians
-    (self - 90) * Math::PI / 180.0
-  end
-
-  def radians_to_gosu
-    self * 180.0 / Math::PI + 90
-  end
-
-  def radians_to_vec2
-    CP::Vec2.new(Math::cos(self), Math::sin(self))
-  end
-end
-
 
 # Generates the Walls for the objects to bounce off
 class Wall
@@ -76,76 +63,6 @@ class Wall
 
 end
 
-# The falling object, just called block, but can be anything really
-class Block
-
-  attr_accessor :body, :shape
-
-  BOX_SIZE = 2.0
-
-  def initialize(window)
-    @window = window
-    @color = Gosu::Color::BLACK
-
-
-    init_body_shape
-  end
-
-  def init_body_shape
-    @body = CP::Body.new(50, 100)
-    @body.p = CP::Vec2.new(250 + rand(SCREEN_WIDTH - 500), -50)
-    @body.v = CP::Vec2.new(0,0)
-    @body.a = (3 * Math::PI / 2.0)
-
-    @shape_verts = [
-                    CP::Vec2.new(-BOX_SIZE, BOX_SIZE),
-                    CP::Vec2.new(BOX_SIZE, BOX_SIZE),
-                    CP::Vec2.new(BOX_SIZE, -BOX_SIZE),
-                    CP::Vec2.new(-BOX_SIZE, -BOX_SIZE),
-                   ]
-
-    @shape = CP::Shape::Poly.new(@body,
-                                 @shape_verts,
-                                 CP::Vec2.new(0,0))
-
-    @shape.e = 0.5
-    @shape.u = 1
-
-    @window.space.add_body(@body)
-    @window.space.add_shape(@shape)
-  end
-
-  def update
-    if @body.p.y > SCREEN_HEIGHT
-      @window.space.remove_body(@body)
-      @window.space.remove_shape(@shape)
-      init_body_shape
-    end
-  end
-
-  def draw
-
-    top_left, top_right, bottom_left, bottom_right = self.rotate
-    @window.draw_quad(top_left.x, top_left.y, @color,
-                      top_right.x, top_right.y, @color,
-                      bottom_left.x, bottom_left.y, @color,
-                      bottom_right.x, bottom_right.y, @color,
-                      2)
-  end
-
-  def rotate
-     half_diagonal = Math.sqrt(2) * (BOX_SIZE)
-     [-45, +45, -135, +135].collect do |angle|
-       CP::Vec2.new(@body.p.x + Gosu::offset_x(@body.a.radians_to_gosu + angle,
-                                               half_diagonal),
-
-                    @body.p.y + Gosu::offset_y(@body.a.radians_to_gosu + angle,
-                                               half_diagonal))
-    end
-  end
-
-end
-
 class Game < Gosu::Window
 
   attr_accessor :space
@@ -154,8 +71,6 @@ class Game < Gosu::Window
 
   def initialize
     super(SCREEN_WIDTH, SCREEN_HEIGHT, FULLSCREEN)
-#    @mootlogo = Gosu::Image.new(self, "media/moot.png", false)
-#    @chiplogo = Gosu::Image.new(self, "media/chipmoot.png", false)
     self.caption = "Slides"
     @colors = {:white => Gosu::Color::WHITE, :gray => Gosu::Color::GRAY}
 
@@ -218,10 +133,6 @@ class Game < Gosu::Window
                    0, SCREEN_HEIGHT, @colors[:gray],
                    SCREEN_WIDTH, SCREEN_HEIGHT, @colors[:gray],
                    0)
-
-    # Drawing the logos
-#    @mootlogo.draw(SCREEN_WIDTH - 83, SCREEN_HEIGHT - 43, 1)
-#    @chiplogo.draw(10, SCREEN_HEIGHT - 43, 1)
   end
 
   # Quit the prog

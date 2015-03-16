@@ -23,25 +23,12 @@ require 'gosu'
 require 'chipmunk'
 require 'pry'
 
+require_relative 'numeric'
+
 SCREEN_WIDTH = 800
 SCREEN_HEIGHT = 600
 FULLSCREEN = false
 INFINITY = 1.0/0
-
-# This seems to be the standard helpers for chipmunk to/from gosu
-class Numeric
-  def gosu_to_radians
-    (self - 90) * Math::PI / 180.0
-  end
-
-  def radians_to_gosu
-    self * 180.0 / Math::PI + 90
-  end
-
-  def radians_to_vec2
-    CP::Vec2.new(Math::cos(self), Math::sin(self))
-  end
-end
 
 # Generates the Walls for the objects to bounce off
 class Wall
@@ -273,8 +260,6 @@ class Game < Gosu::Window
 
   def initialize
     super(SCREEN_WIDTH, SCREEN_HEIGHT, FULLSCREEN)
-#    @mootlogo = Gosu::Image.new(self, "media/moot.png", false)
-#    @chiplogo = Gosu::Image.new(self, "media/chipmoot.png", false)
     self.caption = "Bridge"
     @colors = {:white => Gosu::Color::WHITE, :gray => Gosu::Color::GRAY}
 
@@ -322,10 +307,6 @@ class Game < Gosu::Window
                    0, SCREEN_HEIGHT, @colors[:gray],
                    SCREEN_WIDTH, SCREEN_HEIGHT, @colors[:gray],
                    0)
-
-    # Drawing the logos
-#    @mootlogo.draw(SCREEN_WIDTH - 83, SCREEN_HEIGHT - 43, 1)
-#    @chiplogo.draw(10, SCREEN_HEIGHT - 43, 1)
   end
 
   # Quit the prog
