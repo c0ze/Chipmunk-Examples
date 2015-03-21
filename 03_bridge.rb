@@ -18,7 +18,7 @@
 # This requires gosu gem has been installed and the chipmunk bundle.
 # The mac version of chipmunk has come with this package.
 # For Linux and Windows you'll need to build the package yourself
-require 'rubygems'
+
 require 'gosu'
 require 'chipmunk'
 require 'pry'
@@ -51,7 +51,7 @@ class Wall
     @shape.e = 0.1
     @shape.u = 0.5
 
-    @window.space.add_static_shape(@shape)
+#    @window.space.add_static_shape(@shape)
 
     @shape.collision_type = :wall
   end
@@ -99,18 +99,18 @@ class Bridge
       @shapes << CP::Shape::Poly.new(@bodies[-1], @shape_verts, CP::Vec2.new(0,0))
       # MOVING BACKWARDS THROUGH THE ARRAY
 #      binding.pry
-      if @bodies[-2]
-        @joints << CP::Constraint::PinJoint.new(@bodies[-2], @bodies[-1], CP::Vec2.new((@seg_length / 2), -BRIDGE_WIDTH), CP::Vec2.new((-@seg_length / 2), -BRIDGE_WIDTH))
-      end
+#      if @bodies[-2]
+#        @joints << CP::Constraint::PinJoint.new(@bodies[-2], @bodies[-1], CP::Vec2.new((@seg_length / 2), -BRIDGE_WIDTH), CP::Vec2.new((-@seg_length / 2), -BRIDGE_WIDTH))
+#      end
     end
 
     2.times do
-      @bodies << CP::Body.new(INFINITY, INFINITY)
-      @shapes << CP::Shape::Poly.new(@bodies[-1], post_anchors, CP::Vec2.new(0,0))
+#      @bodies << CP::Body.new(INFINITY, INFINITY)
+#      @shapes << CP::Shape::Poly.new(@bodies[-1], post_anchors, CP::Vec2.new(0,0))
     end
 
-    @joints << CP::Constraint::PinJoint.new(@bodies[-1], @bodies[0], CP::Vec2.new(0, 0), CP::Vec2.new(-@seg_length / 2, -BRIDGE_WIDTH))
-    @joints << CP::Constraint::PinJoint.new(@bodies[-2], @bodies[-3], CP::Vec2.new(0, 0), CP::Vec2.new(@seg_length / 2, -BRIDGE_WIDTH))
+#    @joints << CP::Constraint::PinJoint.new(@bodies[-1], @bodies[0], CP::Vec2.new(0, 0), CP::Vec2.new(-@seg_length / 2, -BRIDGE_WIDTH))
+#    @joints << CP::Constraint::PinJoint.new(@bodies[-2], @bodies[-3], CP::Vec2.new(0, 0), CP::Vec2.new(@seg_length / 2, -BRIDGE_WIDTH))
 
     # SETTINGS OF THE BODIES AND SHAPES
     @segments.times do |seg|
@@ -125,21 +125,21 @@ class Bridge
     @bodies[-2].p = CP::Vec2.new(@pos[1][0], @pos[1][1])
 
     # ADD THE STATIC SHAPES TO CHIP SPACE
-    @window.space.add_static_shape(@shapes[-1])
-    @window.space.add_static_shape(@shapes[-2])
-    @window.space.add_joint(@joints[-1])
-    @window.space.add_joint(@joints[-2])
+#    @window.space.add_static_shape(@shapes[-1])
+#    @window.space.add_static_shape(@shapes[-2])
+#    @window.space.add_joint(@joints[-1])
+#    @window.space.add_joint(@joints[-2])
 
     (@segments).times do |seg|
-      @window.space.add_body(@bodies[seg]) if @bodies[seg]
-      @window.space.add_shape(@shapes[seg]) if @shapes[seg]
-      @window.space.add_joint(@joints[seg]) if @joints[seg]
+#      @window.space.add_body(@bodies[seg]) if @bodies[seg]
+#      @window.space.add_shape(@shapes[seg]) if @shapes[seg]
+#      @window.space.add_joint(@joints[seg]) if @joints[seg]
       @shapes[seg].collision_type = :seg if @shapes[seg] # CREATING HANDLES FOR THEM
     end
 
     # REMOVING THE COLLISIONS OF THE BRIDGE AND WALLS, SO THAT IT DOESN'T BOUNCE OFF ITSELF, OR THE CLIFF
-    @window.space.add_collision_func(:seg, :wall, &nil)
-    @window.space.add_collision_func(:seg, :seg, &nil)
+#    @window.space.add_collision_func(:seg, :wall, &nil)
+#    @window.space.add_collision_func(:seg, :seg, &nil)
 
   end
 
@@ -214,8 +214,8 @@ class Block
     @shape.e = 1
     @shape.u = 0.3
 
-    @window.space.add_body(@body)
-    @window.space.add_shape(@shape)
+#    @window.space.add_body(@body)
+#    @window.space.add_shape(@shape)
 
     @timer = Gosu::milliseconds + 3000
   end
